@@ -3,6 +3,8 @@ package io.github.siaust;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,10 +19,19 @@ public class Main {
 }
 
 class TextEditor extends JFrame {
+     static JButton buttonSave;
+     static JButton buttonLoad;
+
+    private static final String PATH = "./src/main/java/io/github/siaust/";
 
     public TextEditor() {
-        // JFrame
         super("Text Editor");
+        prepareGUI();
+    }
+
+    private void prepareGUI() {
+        // JFrame
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setLocationRelativeTo(null);
         setLocation(1500,300); // where the JFrame appears on the desktop
@@ -35,7 +46,7 @@ class TextEditor extends JFrame {
         topContainer.setSize(200, 200);
 
         // JTextField
-        JTextField textField = new JTextField("test.txt"); // todo: test.txt temporary field input for testing, remove
+        JTextField textField = new JTextField("test.txt"); // fixme: test.txt temporary field input for testing, remove
         textField.setName("FilenameField");
         textField.setPreferredSize(new Dimension(200, 27)); // todo: fill space from left?
         textField.setBounds(new Rectangle(200, 100));
@@ -43,13 +54,15 @@ class TextEditor extends JFrame {
         textField.setVisible(true);
 
         //JButton SAVE
-        JButton buttonSave = new JButton("Save");
+        buttonSave = new JButton("Save");
         buttonSave.setName("SaveButton");
+        buttonSave.setToolTipText("CTRL+S");
         buttonSave.setVisible(true);
 
         // JButton LOAD
-        JButton buttonLoad = new JButton("Load");
+        buttonLoad = new JButton("Load");
         buttonLoad.setName("LoadButton");
+        buttonLoad.setToolTipText("CTRL+ENTER");
         buttonLoad.setVisible(true);
 
         // JTextArea
@@ -85,27 +98,63 @@ class TextEditor extends JFrame {
         add(topContainer, BorderLayout.CENTER);
         setVisible(true);
 
-        // LOAD button listener
-        buttonLoad.addActionListener(e -> {
-            try {
-                String content = new String(Files.readAllBytes(Path.of("./src/main/java/io/github/siaust/"
-                                                            + textField.getText())));
-                textArea.setText(content);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+        // *** LISTENERS ***
 
-        });
+        // LOAD button listener
+        buttonLoad.addActionListener(e -> Load(textField.getText(), textArea));
 
         // SAVE button listener
-        buttonSave.addActionListener(e -> {
-            try {
-                Files.write(Path.of("./src/main/java/io/github/siaust/"
-                                                    + textField.getText()), textArea.getText().getBytes());
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
+        buttonSave.addActionListener(e -> Save(textField.getText(), textArea.getText()));
 
+        // Enter key loads
+        CustomKeyListener customKeyListener = new CustomKeyListener();
+        textField.addKeyListener(customKeyListener);
+        textArea.addKeyListener(customKeyListener);
+    }
+
+    void Load(String fileName, JTextArea textArea) {
+        try {
+            String content = new String(Files.readAllBytes(Path.of(PATH
+                    + fileName)));
+            textArea.setText(content);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    void Save(String fileName, String content) {
+        try {
+            Files.write(Path.of(PATH
+                    + fileName), content.getBytes());
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+}
+
+class CustomKeyListener implements KeyListener {
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+//        System.out.println(e.getKeyCode());
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+            System.out.println("CTRL+S pressed");
+            TextEditor.buttonSave.doClick();
+//            TextEditor.Save();
+        }
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            System.out.println("CTRL+ENTER pressed");
+            TextEditor.buttonLoad.doClick();
+//            TextEditor.Load();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+//        System.out.println(e.getKeyCode());
     }
 }
