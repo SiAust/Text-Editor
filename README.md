@@ -4,6 +4,7 @@ This program utilises Java Swing GUI.
 ## Features
 - Open and save text files.
 - Keyboard shortcuts
+- "File" menu with options to load, save and exit the program.
 
 ## Instructions
 The user specifies the filename and clicks "Load", or `CTRL+ENTER` to open the file.

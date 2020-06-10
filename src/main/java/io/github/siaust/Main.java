@@ -31,7 +31,6 @@ class TextEditor extends JFrame {
 
     private void prepareGUI() {
         // JFrame
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setLocationRelativeTo(null);
         setLocation(1500,300); // where the JFrame appears on the desktop
@@ -44,6 +43,29 @@ class TextEditor extends JFrame {
         topBorderLayout.setVgap(10);
         topContainer.setLayout(topBorderLayout);
         topContainer.setSize(200, 200);
+
+        // JMenuBar and JMenu
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setName("MenuFile");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+        menuBar.add(fileMenu);
+
+        // JMenuItems
+        JMenuItem loadMenuItem = new JMenuItem("Load");
+        loadMenuItem.setName("MenuLoad");
+        JMenuItem saveMenuItem = new JMenuItem("Save");
+        saveMenuItem.setName("MenuSave");
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.setName("MenuExit");
+
+        fileMenu.add(loadMenuItem);
+        fileMenu.add(saveMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitMenuItem);
+
 
         // JTextField
         JTextField textField = new JTextField("test.txt"); // fixme: test.txt temporary field input for testing, remove
@@ -106,7 +128,16 @@ class TextEditor extends JFrame {
         // SAVE button listener
         buttonSave.addActionListener(e -> Save(textField.getText(), textArea.getText()));
 
-        // Enter key loads
+        // Load menu item listener
+        loadMenuItem.addActionListener(e -> Load(textField.getText(), textArea));
+
+        // Save menu item listener
+        saveMenuItem.addActionListener(e -> Save(textField.getText(), textArea.getText()));
+
+        // Exit menu item listener
+        exitMenuItem.addActionListener(event -> System.exit(0)); // todo: dispose JFrame object instead?
+
+        // Key listeners
         CustomKeyListener customKeyListener = new CustomKeyListener();
         textField.addKeyListener(customKeyListener);
         textArea.addKeyListener(customKeyListener);
@@ -119,13 +150,13 @@ class TextEditor extends JFrame {
             textArea.setText(content);
         } catch (IOException ioException) {
             ioException.printStackTrace();
+            textArea.setText("");
         }
     }
 
     void Save(String fileName, String content) {
         try {
-            Files.write(Path.of(PATH
-                    + fileName), content.getBytes());
+            Files.write(Path.of(PATH + fileName), content.getBytes());
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
