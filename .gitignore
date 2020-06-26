@@ -1,0 +1,12 @@
+
+.gradle/
+.idea/
+.build/
+out/production
+build
+settings.gradle
+build.gradle
+gradlew
+gradlew.bat
+gradle
+/src/main/java/Test
