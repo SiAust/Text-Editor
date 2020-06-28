@@ -1,5 +1,11 @@
-some 234 some \d{3} some some
+Running a plain text search of "some" will find all subsets of the word in this .txt file.
+Running a regex search using the specifiers \bsome\b only finds "some" with a word boundary,
+therefore excluding the word "somewebsite".
+
+Using the regular expression "\d{3}" with find all groups of three integers. Doing the same
+search but in plaintext will select the character set "\d{3}".
+
+Some 234 some \d{3} some some
 \d{3} 589 \d{3}
-123
+123 2456
 http://www.somewebsite.com/
-New text

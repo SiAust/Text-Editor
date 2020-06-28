@@ -4,15 +4,14 @@ import javax.swing.*;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SearchWorker extends SwingWorker<Deque<int[]>, Object> {
     private final String content;
-    private String searchPattern;
-    private boolean regex;
+    private final String searchPattern;
+    private final boolean regex;
 
     public SearchWorker(String content, String searchPattern, boolean regex) {
         this.content = content;
@@ -22,7 +21,7 @@ public class SearchWorker extends SwingWorker<Deque<int[]>, Object> {
 
     @Override
     protected Deque<int[]> doInBackground() throws Exception {
-        System.out.println("regex: " + regex);
+//        System.out.println("regex: " + regex);
         Deque<int[]> deque = new ArrayDeque<>();
 
         if (!regex) {
@@ -38,7 +37,7 @@ public class SearchWorker extends SwingWorker<Deque<int[]>, Object> {
             }
 
         } else {
-            Pattern pattern = Pattern.compile(searchPattern, Pattern.CASE_INSENSITIVE); // fixme: remove case insensitive?
+            Pattern pattern = Pattern.compile(searchPattern); // fixme: remove case insensitive?
             Matcher matcher = pattern.matcher(content);
             while (matcher.find()) {
                 int[] subsetItem = new int[2];
@@ -48,9 +47,9 @@ public class SearchWorker extends SwingWorker<Deque<int[]>, Object> {
             }
         }
 
-        System.out.println("searchPattern: " + searchPattern);
+//        System.out.println("searchPattern: " + searchPattern);
         deque.forEach(o -> System.out.print(Arrays.toString(o) + " "));
-        System.out.println();
+//        System.out.println();
         return deque;
     }
 

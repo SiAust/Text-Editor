@@ -14,8 +14,12 @@ Editing can be done to the text before the user save the file by
 clicking "Save", or pressing `CTRL+S`.
 
 ## Instructions
-Use `git clone http://www.github.com/siaust/text.editor/text_editor_main.jar`
-. Double click the downloaded .jar archive to run the program.
+From IntelliJ IDEA, in the terminal use the command
+ `git clone https://github.com/siaust/text.editor.git`
+, to create a local copy of this repository.
+ In the terminal in IntelliJ IDEA, change directory using the command
+ `cd text-editor\src\main\java\io\github\siaust`. Run the Java archive 
+ `Text_Editor.jar` by using the command `java -jar Text_Editor.jar`.
 
 ## Accreditation
 Icons provided under the CC BY-NC 3.0 NL License.   

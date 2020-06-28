@@ -21,10 +21,11 @@ class EditorGUI extends JFrame {
 
     static JButton saveButton;
     static JButton loadButton;
-    private static JButton nextButton;
-    private static JButton previousButton;
+    static JButton searchButton;
+    static JButton nextButton;
+    static JButton previousButton;
 
-    private JFileChooser jFileChooser = new JFileChooser(SRC_PATH);
+    private final JFileChooser jFileChooser = new JFileChooser(SRC_PATH);
     private static JTextArea jTextArea;
 
     private static final String SRC_PATH = "./src/main/java/io/github/siaust/";
@@ -124,38 +125,41 @@ class EditorGUI extends JFrame {
         // *** NORTH ITEMS ***
 
         // JTextField
-        JTextField textField = new JTextField("some"); // fixme: test.txt temporary field input for testing, remove
+        JTextField textField = new JTextField("\\d{3}"); // fixme: test.txt temporary field input for testing, remove
         textField.setName("FilenameField");
         textField.setPreferredSize(new Dimension(200, 35));
         textField.setToolTipText("Enter a word or regexp");
 
         //JButton SAVE
-        saveButton = new JButton(new ImageIcon("C:\\Users\\si_au\\OneDrive\\Coding\\text.editor\\src\\main\\resources\\save.png"));
+        saveButton = new JButton(
+                new ImageIcon(this.getClass().getResource("/save.png")));
         saveButton.setName("SaveButton");
         saveButton.setPreferredSize(new Dimension(34, 34));
         saveButton.setToolTipText("CTRL+S");
 
         // JButton LOAD
-        loadButton = new JButton(new ImageIcon("src/main/resources/load.png"));
+        loadButton = new JButton(
+                new ImageIcon(this.getClass().getResource("/load.png")));
         loadButton.setName("LoadButton");
         loadButton.setPreferredSize(new Dimension(34, 34));
         loadButton.setToolTipText("CTRL+ENTER");
 
         // JButton Search
-        JButton searchButton = new JButton(new ImageIcon("src/main/resources/search.png"));
+        searchButton = new JButton(
+                new ImageIcon(this.getClass().getResource("/search.png")));
         searchButton.setName("StartSearchButton");
         searchButton.setPreferredSize(new Dimension(34, 34));
         searchButton.setToolTipText("CTRL+F");
 
         // JButton Previous
-        previousButton = new JButton(new ImageIcon("src/main/resources/previous.png"));
-        previousButton.setName("PreviousMatchButton");
+        previousButton = new JButton(
+                new ImageIcon(this.getClass().getResource("/previous.png")));
         previousButton.setPreferredSize(new Dimension(34, 34));
         previousButton.setToolTipText("CTRL+?"); //todo: control + left arrow
 
         // JButton Next
-        nextButton = new JButton(new ImageIcon("src/main/resources/forward.png"));
-        nextButton.setName("NextMatchButton");
+        nextButton = new JButton(); // todo: Change the others!?
+        nextButton.setIcon(new ImageIcon(this.getClass().getResource("/forward.png")));
         nextButton.setPreferredSize(new Dimension(34, 34));
         nextButton.setToolTipText("CTRL+?"); // todo: control + right arrow
 
@@ -197,10 +201,10 @@ class EditorGUI extends JFrame {
         // *** LISTENERS ***
 
         // Button load listener
-        loadButton.addActionListener(e -> openFileChooser(jTextArea));
+        loadButton.addActionListener(e -> showFChooserLoad(jTextArea));
 
         // Button save listener
-        saveButton.addActionListener(e -> save(jTextArea.getText()));
+        saveButton.addActionListener(e -> showFChooserSave(jTextArea.getText()));
 
         // Button search listener
         searchButton.addActionListener(e -> new SearchWorker(jTextArea.getText(),
@@ -214,18 +218,18 @@ class EditorGUI extends JFrame {
 
         // Checkbox listener
         checkBox.addItemListener(e -> {
-           if (e.getStateChange() == 1) {
-               regex = true;
-           } else {
-               regex = false;
-           }
+            if (e.getStateChange() == 1) {
+                regex = true;
+            } else {
+                regex = false;
+            }
         });
 
         // Menu load item listener
-        loadMenuItem.addActionListener(e -> openFileChooser(jTextArea));
+        loadMenuItem.addActionListener(e -> showFChooserLoad(jTextArea));
 
         // Menu save item listener
-        saveMenuItem.addActionListener(e -> save(jTextArea.getText()));
+        saveMenuItem.addActionListener(e -> showFChooserSave(jTextArea.getText()));
 
         // Menu exit item listener
         exitMenuItem.addActionListener(event -> System.exit(0)); // todo: dispose JFrame object instead?
@@ -260,7 +264,7 @@ class EditorGUI extends JFrame {
         jTextArea.addKeyListener(customKeyListener);
     }
 
-    void openFileChooser(JTextArea textArea) {
+    void showFChooserLoad(JTextArea textArea) {
         jFileChooser.setVisible(true);
         jFileChooser.setDialogTitle("Select a .txt file");
         jFileChooser.setAcceptAllFileFilterUsed(false);
@@ -283,7 +287,7 @@ class EditorGUI extends JFrame {
         }
     }
 
-    void save(String content) {
+    void showFChooserSave(String content) {
         if (filePath == null) {
             jFileChooser.setDialogTitle("Save file");
 
@@ -352,9 +356,9 @@ class EditorGUI extends JFrame {
         if (searchResults.size() > 0) {
             // todo: May need to remove this for the tests.
             nextButton.setEnabled(true);
-            nextButton.setToolTipText("Next item.");
+            nextButton.setToolTipText("CTRL+PERIOD");
             previousButton.setEnabled(true);
-            previousButton.setToolTipText("Previous item.");
+            previousButton.setToolTipText("CTRL+COMMA");
 
             int[] initialResult = searchResults.poll();
             searchResults.offerLast(initialResult);
@@ -368,9 +372,9 @@ class EditorGUI extends JFrame {
 
             // todo: May need to remove this for the tests.
             nextButton.setEnabled(false);
-            nextButton.setToolTipText("No next item.");
+            nextButton.setToolTipText("No next item");
             previousButton.setEnabled(false);
-            previousButton.setToolTipText("No previous item.");
+            previousButton.setToolTipText("No previous item");
         }
     }
 
@@ -438,6 +442,18 @@ class CustomKeyListener implements KeyListener {
             System.out.println("CTRL+ENTER pressed");
             EditorGUI.loadButton.doClick();
 //            TextEditor.Load();
+        }
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_F) {
+            EditorGUI.searchButton.doClick();
+//            System.out.println("CTRL+F pressed");
+        }
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_PERIOD) {
+            EditorGUI.nextButton.doClick();
+//            System.out.println("CTRL+RIGHT pressed");
+        }
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_COMMA) {
+            EditorGUI.previousButton.doClick();
+//            System.out.println("CTRL+LEFT pressed");
         }
     }
 
