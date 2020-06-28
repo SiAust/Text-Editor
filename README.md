@@ -15,7 +15,7 @@ clicking "Save", or pressing `CTRL+S`.
 
 ## Instructions
 From IntelliJ IDEA, in the terminal use the command
- `git clone https://github.com/siaust/text.editor.git`
+ `git clone https://github.com/siaust/text-editor.git`
 , to create a local copy of this repository.
  In the terminal in IntelliJ IDEA, change directory using the command
  `cd text-editor\src\main\java\io\github\siaust`. Run the Java archive 
