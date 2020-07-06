@@ -2,7 +2,6 @@ package io.github.siaust;
 
 import javax.swing.*;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -21,7 +20,6 @@ public class SearchWorker extends SwingWorker<Deque<int[]>, Object> {
 
     @Override
     protected Deque<int[]> doInBackground() throws Exception {
-//        System.out.println("regex: " + regex);
         Deque<int[]> deque = new ArrayDeque<>();
 
         if (!regex) {
@@ -46,10 +44,6 @@ public class SearchWorker extends SwingWorker<Deque<int[]>, Object> {
                 deque.offer(subsetItem);
             }
         }
-
-//        System.out.println("searchPattern: " + searchPattern);
-        deque.forEach(o -> System.out.print(Arrays.toString(o) + " "));
-//        System.out.println();
         return deque;
     }
 

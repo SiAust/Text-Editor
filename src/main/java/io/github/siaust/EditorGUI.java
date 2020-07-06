@@ -6,6 +6,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -30,6 +32,9 @@ class EditorGUI extends JFrame {
 
     private static final String SRC_PATH = "./src/main/java/io/github/siaust/";
     private String filePath;
+    private static final String TITLE = "Text Editor";
+    private static String fileName = "";
+
     private static Deque<int[]> searchResults = new ArrayDeque<>();
 
     private JCheckBox checkBox = new JCheckBox("Use regex");
@@ -37,20 +42,31 @@ class EditorGUI extends JFrame {
 
 
     public EditorGUI() {
-        super("Text Editor");
+        super(TITLE);
         prepareGUI();
     }
 
     private void prepareGUI() {
+
         // JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setLocationRelativeTo(null);
-        setLocation(1500, 300); // where the JFrame appears on the desktop
+        setLocationRelativeTo(null); // where the JFrame appears on the desktop
         setSize(600, 400);
         setMinimumSize(new Dimension(600, 400));
 
-        // Setting the filename in the centre of the title bar.
+        // Setting up FileChooser, limiting file types association
+        jFileChooser.setName("FileChooser");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("TXT files", "txt");
+        jFileChooser.addChoosableFileFilter(filter);
 
+        // Setting the current filename in the centre of the title bar on resize
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                titleAlign();
+            }
+        });
 
         //JPanel top level container
         JPanel topContainer = new JPanel();
@@ -264,22 +280,47 @@ class EditorGUI extends JFrame {
         jTextArea.addKeyListener(customKeyListener);
     }
 
+    // Aligns the file name to the center of the JFrame while leaving the app name left justified
+    private void titleAlign() {
+
+        Font font = getFont();
+
+        String fileTitle = fileName.trim();
+        FontMetrics fm = getFontMetrics(font);
+        int frameWidth = getWidth();
+        int titleWidth = fm.stringWidth(fileTitle);
+        int spaceWidth = fm.stringWidth(" ");
+        int centerPos = (frameWidth / 2) - (titleWidth / 2);
+        int spaceCount = centerPos / spaceWidth;
+        String pad = "";
+        pad = String.format("%" + (spaceCount - 35) + "s", pad);
+        setTitle(TITLE + pad + fileTitle);
+    }
+
     void showFChooserLoad(JTextArea textArea) {
         jFileChooser.setVisible(true);
         jFileChooser.setDialogTitle("Select a .txt file");
         jFileChooser.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("TXT files", "txt");
-        jFileChooser.addChoosableFileFilter(filter);
 
         // Opens the JFileChooser dialog and receives the result of user action
         int result = jFileChooser.showOpenDialog(null);
 
+
         // Check the result code, if it is 1 user selected a .txt file. Open the .txt file and show content.
         if (result == JFileChooser.APPROVE_OPTION) {
             filePath = jFileChooser.getSelectedFile().getAbsolutePath();
+
+            /* If user typed in the name rather than selecting it, append ".txt" to the path
+             * if they haven't included the extension themselves */
+            if (!filePath.contains(".txt")) {
+                filePath += ".txt";
+            }
+
             try {
                 String content = new String(Files.readAllBytes(Path.of(filePath)));
                 textArea.setText(content);
+                fileName = jFileChooser.getName(jFileChooser.getSelectedFile());
+                titleAlign();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
                 textArea.setText("");
@@ -288,21 +329,19 @@ class EditorGUI extends JFrame {
     }
 
     void showFChooserSave(String content) {
-        if (filePath == null) {
-            jFileChooser.setDialogTitle("Save file");
+        jFileChooser.setDialogTitle("Save file");
 
-            int result = jFileChooser.showSaveDialog(null);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                filePath = jFileChooser.getSelectedFile().getAbsolutePath() + ".txt";
-                try {
-                    Files.write(Path.of(filePath), content.getBytes());
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
+        int result = jFileChooser.showSaveDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            filePath = jFileChooser.getSelectedFile().getAbsolutePath();
+            // If user types file name without extension
+            if (!filePath.contains(".txt")) {
+                filePath += ".txt";
             }
-        } else {
             try {
                 Files.write(Path.of(filePath), content.getBytes());
+                fileName = jFileChooser.getName(jFileChooser.getSelectedFile());
+                titleAlign();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }

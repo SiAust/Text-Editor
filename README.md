@@ -8,6 +8,8 @@ This program utilises Java Swing GUI.
 or a regular expression. The search type is declared by the 
 "use regex" checkbox, or menu item "use regular expressions".
 
+![App example animated gif]()
+
 ## Instructions
 The user specifies the filename and clicks "Load", or `CTRL+ENTER` to open the file.
 Editing can be done to the text before the user save the file by
@@ -20,6 +22,7 @@ From IntelliJ IDEA, in the terminal use the command
  In the terminal in IntelliJ IDEA, change directory using the command
  `cd text-editor\src\main\java\io\github\siaust`. Run the Java archive 
  `Text_Editor.jar` by using the command `java -jar Text_Editor.jar`.
+ You may copy the `.jar` file and distribute as you wish.
 
 ## Accreditation
 Icons provided under the CC BY-NC 3.0 NL License.   

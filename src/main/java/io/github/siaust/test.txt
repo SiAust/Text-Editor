@@ -1,6 +1,6 @@
 Running a plain text search of "some" will find all subsets of the word in this .txt file.
 Running a regex search using the specifiers \bsome\b only finds "some" with a word boundary,
-therefore excluding the word "somewebsite".
+therefore excluding the word "somewhere".
 
 Using the regular expression "\d{3}" with find all groups of three integers. Doing the same
 search but in plaintext will select the character set "\d{3}".
