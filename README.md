@@ -8,7 +8,7 @@ This program utilises Java Swing GUI.
 or a regular expression. The search type is declared by the 
 "use regex" checkbox, or menu item "use regular expressions".
 
-![App example animated gif]()
+![App example animated gif](https://github.com/SiAust/Text-Editor/blob/master/example.gif)
 
 ## Instructions
 The user specifies the filename and clicks "Load", or `CTRL+ENTER` to open the file.
